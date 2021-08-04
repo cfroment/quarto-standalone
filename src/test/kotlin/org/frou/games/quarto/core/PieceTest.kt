@@ -4,15 +4,15 @@ import org.frou.games.quarto.core.traits.Color
 import org.frou.games.quarto.core.traits.Shape
 import org.frou.games.quarto.core.traits.Size
 import org.frou.games.quarto.core.traits.Texture
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Test
-
-import org.junit.jupiter.api.Assertions.*
 
 internal class PieceTest {
 
     @Test
     fun `Test that one piece equals another with same traits`() {
-        assertEquals(Piece(emptyList()), Piece(emptyList()))
+        assertEquals(Piece(emptySet()), Piece(emptySet()))
         assertEquals(Piece(Size.TINY), Piece(Size.TINY))
         assertEquals(Piece(Size.TINY, Shape.CIRCLE), Piece(Size.TINY, Shape.CIRCLE))
         assertEquals(Piece(Size.TINY, Shape.CIRCLE, Color.WHITE), Piece(Size.TINY, Shape.CIRCLE, Color.WHITE))

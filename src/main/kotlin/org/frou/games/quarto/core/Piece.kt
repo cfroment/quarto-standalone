@@ -2,9 +2,9 @@ package org.frou.games.quarto.core
 
 import org.frou.games.quarto.core.traits.Trait
 
-data class Piece(val traits: List<Trait>) {
+data class Piece(val traits: Set<Trait>) {
 
-    constructor(vararg manyTraits: Trait) : this(listOf(*manyTraits))
+    constructor(vararg manyTraits: Trait) : this(setOf(*manyTraits))
 
     override fun toString(): String {
         return traits.joinToString(
@@ -13,6 +13,5 @@ data class Piece(val traits: List<Trait>) {
             postfix = ")",
             transform = { it.toString().subSequence(0, 1) })
     }
-
 
 }

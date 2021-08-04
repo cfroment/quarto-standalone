@@ -1,12 +1,7 @@
 package org.frou.games.quarto.core
 
-import org.frou.games.quarto.core.rule.QuartoError
-import org.frou.games.quarto.core.rule.QuartoException
 import org.frou.games.quarto.core.rule.QuartoRule
-import org.frou.games.quarto.core.traits.Color
-import org.frou.games.quarto.core.traits.Shape
-import org.frou.games.quarto.core.traits.Size
-import org.frou.games.quarto.core.traits.Texture
+import org.frou.games.quarto.core.traits.*
 
 class Board {
 
@@ -30,17 +25,41 @@ class Board {
         Piece(Size.TINY, Color.BLACK, Shape.SQUARE, Texture.FILLED),
         Piece(Size.TINY, Color.BLACK, Shape.SQUARE, Texture.HOLLOW),
     )
-    val placedPieces = mutableMapOf<Pair<Int, Int>, Piece>()
+
+    val xPlacedPieces = mutableMapOf<Int, MutableMap<Int, Piece>>()
+    val yPlacedPieces = mutableMapOf<Int, MutableMap<Int, Piece>>()
 
     fun play(piece: Piece, x: Int, y: Int): Boolean {
-        val coordinate = Pair(x, y)
-        if (placedPieces.containsKey(coordinate)) {
+        if (xPlacedPieces[x]?.get(y) != null) {
             QuartoRule.POSITION_ALREADY_OCCUPIED.raise()
         }
-        return checkWin()
+
+        val won = sequenceOf(
+            checkWin(xPlacedPieces[x]?.values.orEmpty()), // win on row
+            checkWin(yPlacedPieces[y]?.values.orEmpty()), // win on column
+            checkWin(generateSequence(seed = 0) { it + 1 }  // win on first diagonal
+                .takeWhile { it < this.width }
+                .map { xPlacedPieces[it]?.get(it) }.toList()),
+            checkWin(generateSequence(seed = 0) { it + 1 } // win on second diagonal
+                .takeWhile { it < this.width }
+                .map { xPlacedPieces[it]?.get(width - it) }.toList())
+        ).any()
+
+        if (!won) {
+            xPlacedPieces[x]?.put(y, piece)
+            yPlacedPieces[y]?.put(x, piece)
+        }
+        return won
     }
 
-    fun checkWin(): Boolean {
-        return false
+    fun checkWin(pieces: Collection<Piece?>): Boolean {
+        val actualPieces = pieces.filterNotNull()
+        if (actualPieces.size != this.width) return false  // requires MAX pieces to win
+
+        // intersection of all traits not empty ? --> won
+        return actualPieces
+            .map { it.traits }
+            .fold(emptySet<Trait>()) { s1, s2 -> s1.intersect(s2) }
+            .isNotEmpty()
     }
 }
