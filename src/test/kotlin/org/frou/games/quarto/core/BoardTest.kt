@@ -1,5 +1,6 @@
 package org.frou.games.quarto.core
 
+import org.frou.games.quarto.core.rule.QuartoException
 import org.frou.games.quarto.core.traits.Color
 import org.frou.games.quarto.core.traits.Shape
 import org.frou.games.quarto.core.traits.Size
@@ -8,6 +9,7 @@ import org.junit.jupiter.api.Test
 
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.assertThrows
 
 internal class BoardTest {
 
@@ -69,5 +71,11 @@ internal class BoardTest {
         assertFalse(board.play(piece2, 0, 1))
         assertFalse(board.play(piece3, 0, 2))
         assertTrue(board.play(piece4, 0, 3))
+    }
+
+    @Test
+    fun `Test can't place a piece on the same position`() {
+        board.play(Piece(Size.BIG), 0, 0)
+        assertThrows<QuartoException> { board.play(Piece(Size.BIG), 0, 0) }
     }
 }
