@@ -5,26 +5,9 @@ import org.frou.games.quarto.core.traits.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-class Board(val size: Int = DEFAULT_SIZE) {
+class Board(private val size: Int = DEFAULT_SIZE) {
 
-    private val remainingPieces = mutableSetOf(
-        Piece(Size.BIG, Color.WHITE, Shape.CIRCLE, Texture.FILLED),
-        Piece(Size.BIG, Color.WHITE, Shape.CIRCLE, Texture.HOLLOW),
-        Piece(Size.BIG, Color.WHITE, Shape.SQUARE, Texture.FILLED),
-        Piece(Size.BIG, Color.WHITE, Shape.SQUARE, Texture.HOLLOW),
-        Piece(Size.BIG, Color.BLACK, Shape.CIRCLE, Texture.FILLED),
-        Piece(Size.BIG, Color.BLACK, Shape.CIRCLE, Texture.HOLLOW),
-        Piece(Size.BIG, Color.BLACK, Shape.SQUARE, Texture.FILLED),
-        Piece(Size.BIG, Color.BLACK, Shape.SQUARE, Texture.HOLLOW),
-        Piece(Size.TINY, Color.WHITE, Shape.CIRCLE, Texture.FILLED),
-        Piece(Size.TINY, Color.WHITE, Shape.CIRCLE, Texture.HOLLOW),
-        Piece(Size.TINY, Color.WHITE, Shape.SQUARE, Texture.FILLED),
-        Piece(Size.TINY, Color.WHITE, Shape.SQUARE, Texture.HOLLOW),
-        Piece(Size.TINY, Color.BLACK, Shape.CIRCLE, Texture.FILLED),
-        Piece(Size.TINY, Color.BLACK, Shape.CIRCLE, Texture.HOLLOW),
-        Piece(Size.TINY, Color.BLACK, Shape.SQUARE, Texture.FILLED),
-        Piece(Size.TINY, Color.BLACK, Shape.SQUARE, Texture.HOLLOW),
-    )
+    private val remainingPieces = DEFAULT_PIECES.toMutableSet()
 
     private val xPlacedPieces = mutableMapOf<Int, MutableMap<Int, Piece>>()
     private val yPlacedPieces = mutableMapOf<Int, MutableMap<Int, Piece>>()
@@ -64,12 +47,30 @@ class Board(val size: Int = DEFAULT_SIZE) {
         // intersection of all traits not empty ? --> won
         return actualPieces
             .map { it.traits }
-            .fold(actualPieces.first().traits) { s1, s2 -> s1.intersect(s2) }
+            .fold(actualPieces.first().traits) { traits1, traits2 -> traits1.intersect(traits2) }
             .isNotEmpty()
     }
 
     companion object {
         const val DEFAULT_SIZE = 4
         private val LOGGER: Logger = LoggerFactory.getLogger(Board::class.java)
+        private val DEFAULT_PIECES = setOf(
+            Piece(Size.BIG, Color.WHITE, Shape.CIRCLE, Texture.FILLED),
+            Piece(Size.BIG, Color.WHITE, Shape.CIRCLE, Texture.HOLLOW),
+            Piece(Size.BIG, Color.WHITE, Shape.SQUARE, Texture.FILLED),
+            Piece(Size.BIG, Color.WHITE, Shape.SQUARE, Texture.HOLLOW),
+            Piece(Size.BIG, Color.BLACK, Shape.CIRCLE, Texture.FILLED),
+            Piece(Size.BIG, Color.BLACK, Shape.CIRCLE, Texture.HOLLOW),
+            Piece(Size.BIG, Color.BLACK, Shape.SQUARE, Texture.FILLED),
+            Piece(Size.BIG, Color.BLACK, Shape.SQUARE, Texture.HOLLOW),
+            Piece(Size.TINY, Color.WHITE, Shape.CIRCLE, Texture.FILLED),
+            Piece(Size.TINY, Color.WHITE, Shape.CIRCLE, Texture.HOLLOW),
+            Piece(Size.TINY, Color.WHITE, Shape.SQUARE, Texture.FILLED),
+            Piece(Size.TINY, Color.WHITE, Shape.SQUARE, Texture.HOLLOW),
+            Piece(Size.TINY, Color.BLACK, Shape.CIRCLE, Texture.FILLED),
+            Piece(Size.TINY, Color.BLACK, Shape.CIRCLE, Texture.HOLLOW),
+            Piece(Size.TINY, Color.BLACK, Shape.SQUARE, Texture.FILLED),
+            Piece(Size.TINY, Color.BLACK, Shape.SQUARE, Texture.HOLLOW)
+        )
     }
 }
