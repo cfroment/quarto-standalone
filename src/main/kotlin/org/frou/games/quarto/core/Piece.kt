@@ -14,4 +14,8 @@ data class Piece(val traits: Set<Trait>) {
             transform = { it.toString().subSequence(0, 1) })
     }
 
+    fun toShortString(): String =
+        traits.joinToString(separator = "") { it.toString().subSequence(0, 1) }
+
+
 }

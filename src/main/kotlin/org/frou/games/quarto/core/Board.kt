@@ -1,16 +1,14 @@
 package org.frou.games.quarto.core
 
 import org.frou.games.quarto.core.rule.QuartoRule
-import org.frou.games.quarto.core.traits.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 class Board(private val size: Int = DEFAULT_SIZE) {
 
-    private val remainingPieces = DEFAULT_PIECES.toMutableSet()
-
     private val xPlacedPieces = mutableMapOf<Int, MutableMap<Int, Piece>>()
     private val yPlacedPieces = mutableMapOf<Int, MutableMap<Int, Piece>>()
+
 
     fun play(piece: Piece, x: Int, y: Int): Boolean {
         if (xPlacedPieces[x]?.get(y) != null) {
@@ -40,6 +38,15 @@ class Board(private val size: Int = DEFAULT_SIZE) {
         return won
     }
 
+    fun log() {
+        for (x in 0..3) {
+            for (y in 0..3) {
+                print("|${xPlacedPieces[x]?.get(y)?.toShortString() ?: "    "}")
+            }
+            print("|\n")
+        }
+    }
+
     fun checkWin(pieces: Collection<Piece?>): Boolean {
         val actualPieces = pieces.filterNotNull()
         if (actualPieces.size != this.size) return false  // requires MAX pieces to win
@@ -54,23 +61,5 @@ class Board(private val size: Int = DEFAULT_SIZE) {
     companion object {
         const val DEFAULT_SIZE = 4
         private val LOGGER: Logger = LoggerFactory.getLogger(Board::class.java)
-        private val DEFAULT_PIECES = setOf(
-            Piece(Size.BIG, Color.WHITE, Shape.CIRCLE, Texture.FILLED),
-            Piece(Size.BIG, Color.WHITE, Shape.CIRCLE, Texture.HOLLOW),
-            Piece(Size.BIG, Color.WHITE, Shape.SQUARE, Texture.FILLED),
-            Piece(Size.BIG, Color.WHITE, Shape.SQUARE, Texture.HOLLOW),
-            Piece(Size.BIG, Color.BLACK, Shape.CIRCLE, Texture.FILLED),
-            Piece(Size.BIG, Color.BLACK, Shape.CIRCLE, Texture.HOLLOW),
-            Piece(Size.BIG, Color.BLACK, Shape.SQUARE, Texture.FILLED),
-            Piece(Size.BIG, Color.BLACK, Shape.SQUARE, Texture.HOLLOW),
-            Piece(Size.TINY, Color.WHITE, Shape.CIRCLE, Texture.FILLED),
-            Piece(Size.TINY, Color.WHITE, Shape.CIRCLE, Texture.HOLLOW),
-            Piece(Size.TINY, Color.WHITE, Shape.SQUARE, Texture.FILLED),
-            Piece(Size.TINY, Color.WHITE, Shape.SQUARE, Texture.HOLLOW),
-            Piece(Size.TINY, Color.BLACK, Shape.CIRCLE, Texture.FILLED),
-            Piece(Size.TINY, Color.BLACK, Shape.CIRCLE, Texture.HOLLOW),
-            Piece(Size.TINY, Color.BLACK, Shape.SQUARE, Texture.FILLED),
-            Piece(Size.TINY, Color.BLACK, Shape.SQUARE, Texture.HOLLOW)
-        )
     }
 }
